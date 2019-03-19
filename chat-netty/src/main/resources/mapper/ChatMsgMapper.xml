@@ -2,6 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.aiolos.dao.ChatMsgMapper" >
   <resultMap id="BaseResultMap" type="com.aiolos.pojo.ChatMsg" >
+    <!--
+      WARNING - @mbg.generated
+    -->
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="send_user_id" property="sendUserId" jdbcType="VARCHAR" />
     <result column="accept_user_id" property="acceptUserId" jdbcType="VARCHAR" />
@@ -10,6 +13,9 @@
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
+    <!--
+      WARNING - @mbg.generated
+    -->
     id, send_user_id, accept_user_id, msg, sign_flag, create_time
   </sql>
 </mapper>
