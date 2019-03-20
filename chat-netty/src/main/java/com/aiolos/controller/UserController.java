@@ -28,7 +28,7 @@ public class UserController {
     private IUserService userService;
 
     @PostMapping("/registOrLogin")
-    public ChatJSONResult registOrLogin(Users user) throws Exception {
+    public ChatJSONResult registOrLogin(@RequestBody Users user) throws Exception {
 
         log.info("user -> {}", JSON.toJSONString(user));
 
