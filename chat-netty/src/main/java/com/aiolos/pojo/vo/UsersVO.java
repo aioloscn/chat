@@ -11,7 +11,6 @@ import javax.persistence.Table;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users")
 public class UsersVO {
 
     @Id

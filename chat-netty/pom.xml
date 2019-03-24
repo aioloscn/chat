@@ -11,6 +11,8 @@
 
     <artifactId>chat-netty</artifactId>
 
+    <packaging>jar</packaging>
+
     <name>chat-netty</name>
     <description>chat-netty</description>
 
@@ -64,6 +66,18 @@
             <groupId>com.github.bingoohuang</groupId>
             <artifactId>idworker-client</artifactId>
             <version>0.0.8</version>
+        </dependency>
+
+        <!-- 高性能分布式文件服务器依赖 -->
+        <dependency>
+            <groupId>com.github.tobato</groupId>
+            <artifactId>fastdfs-client</artifactId>
+            <version>1.26.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
         </dependency>
     </dependencies>
 </project>

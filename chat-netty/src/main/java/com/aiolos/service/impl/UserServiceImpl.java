@@ -61,4 +61,17 @@ public class UserServiceImpl implements IUserService {
         usersMapper.insert(user);
         return user;
     }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public Users updateUserInfo(Users users) {
+
+        usersMapper.updateByPrimaryKeySelective(users);
+        return queryUserById(users.getId());
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    private Users queryUserById(String userId) {
+        return usersMapper.selectByPrimaryKey(userId);
+    }
 }

@@ -37,3 +37,11 @@ spring:
       pool-name: DatebookHikariCP
       max-lifetime: 28740000
       connection-test-query: SELECT 1
+# 分布式文件系统fastdfs配置
+fdfs:
+  so-timeout: 1501
+  connect-timeout: 601
+  thumb-image:
+    width: 80
+    height: 80
+  tracker-list: 188.131.240.181:22122

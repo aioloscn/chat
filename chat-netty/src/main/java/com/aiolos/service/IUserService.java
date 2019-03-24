@@ -29,4 +29,10 @@ public interface IUserService {
      * @return
      */
     Users saveUser(Users user);
+
+    /**
+     * 修改用户记录
+     * @param users
+     */
+    Users updateUserInfo(Users users);
 }

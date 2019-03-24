@@ -1,9 +1,12 @@
 package com.aiolos.controller;
 
 import com.aiolos.pojo.Users;
+import com.aiolos.pojo.bo.UsersBO;
 import com.aiolos.pojo.vo.UsersVO;
 import com.aiolos.service.IUserService;
 import com.aiolos.utils.ChatJSONResult;
+import com.aiolos.utils.FastDFSClient;
+import com.aiolos.utils.FileUtils;
 import com.aiolos.utils.MD5Utils;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author Aiolos
@@ -27,8 +31,11 @@ public class UserController {
     @Autowired
     private IUserService userService;
 
-    @PostMapping("/registOrLogin")
-    public ChatJSONResult registOrLogin(@RequestBody Users user) throws Exception {
+    @Autowired
+    private FastDFSClient fastDFSClient;
+
+    @PostMapping(value = "/registOrLogin")
+    public ChatJSONResult registOrLogin(Users user) throws Exception {
 
         log.info("user -> {}", JSON.toJSONString(user));
 
@@ -56,6 +63,36 @@ public class UserController {
             userResult = userService.saveUser(user);
         }
 
+        UsersVO usersVO = new UsersVO();
+        BeanUtils.copyProperties(userResult, usersVO);
+
+        return ChatJSONResult.ok(usersVO);
+    }
+
+    @PostMapping("/uploadFaceBase64")
+    public ChatJSONResult uploadFaceBase64(@RequestBody UsersBO usersBO) throws Exception {
+
+        // 获取前段传过来的base64字符串，然后转换为文件对象再上传
+        String base64Data = usersBO.getFaceData();
+        String userFacePath = "/developer/portrait/" + usersBO.getUserId() + "userface64.png";
+        FileUtils.base64ToFile(userFacePath, base64Data);
+
+        MultipartFile faceFile = FileUtils.fileToMultipart(userFacePath);
+        String url = fastDFSClient.uploadBase64(faceFile);
+        System.out.println(url);
+
+        // 获取缩略图的url
+        String thumb = "_80x80.";
+        String arr[] = url.split("\\.");
+        String thumbImgUrl = arr[0] + thumb + arr[1];
+
+        // 更新用户头像
+        Users user = new Users();
+        user.setId(usersBO.getUserId());
+        user.setFaceImage(thumbImgUrl);
+        user.setFaceImageBig(url);
+
+        Users userResult = userService.updateUserInfo(user);
         UsersVO usersVO = new UsersVO();
         BeanUtils.copyProperties(userResult, usersVO);
 
