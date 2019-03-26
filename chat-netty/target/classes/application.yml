@@ -5,6 +5,8 @@ server:
   tomcat:
     uri-encoding: UTF-8
   port: 8080
+  servlet:
+    context-path: /
 # mybatis配置
 mybatis:
   type-aliases-package: com.aiolos.pojo
@@ -26,7 +28,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/chat?useUnicode=true&serverTimezone=UTC&characterEncoding=UTF-8
     username: root
-    password: aiolos1204285
+    password: root
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
       connection-timeout: 30000
@@ -45,3 +47,4 @@ fdfs:
     width: 80
     height: 80
   tracker-list: 188.131.240.181:22122
+# 188.131.240.181  172.21.0.3

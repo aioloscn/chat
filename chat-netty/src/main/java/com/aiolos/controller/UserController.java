@@ -70,11 +70,13 @@ public class UserController {
     }
 
     @PostMapping("/uploadFaceBase64")
-    public ChatJSONResult uploadFaceBase64(@RequestBody UsersBO usersBO) throws Exception {
+    public ChatJSONResult uploadFaceBase64(UsersBO usersBO) throws Exception {
+
+        log.info("usersBO -> {}", JSON.toJSONString(usersBO));
 
         // 获取前段传过来的base64字符串，然后转换为文件对象再上传
         String base64Data = usersBO.getFaceData();
-        String userFacePath = "/developer/portrait/" + usersBO.getUserId() + "userface64.png";
+        String userFacePath = "E:\\IdeaProjects\\" + usersBO.getUserId() + "userface64.png";
         FileUtils.base64ToFile(userFacePath, base64Data);
 
         MultipartFile faceFile = FileUtils.fileToMultipart(userFacePath);

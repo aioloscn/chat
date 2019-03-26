@@ -1,6 +1,6 @@
 /target/
-chat-mybatis/target/
-chat-netty/target/
+./chat-mybatis/target/
+./chat-netty/target/
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###
