@@ -1,6 +1,6 @@
 /target/
-./chat-mybatis/target/
-./chat-netty/target/
+/chat-mybatis/target/
+/chat-netty/target/
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###
@@ -12,6 +12,7 @@
 .springBeans
 .sts4-cache
 .DS_Store
+.gitignore
 
 ### IntelliJ IDEA ###
 .idea/

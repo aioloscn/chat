@@ -17,4 +17,6 @@ public class UsersBO {
 
     private String faceData;
 
+    private String nickname;
+
 }

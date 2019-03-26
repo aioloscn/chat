@@ -100,4 +100,20 @@ public class UserController {
 
         return ChatJSONResult.ok(usersVO);
     }
+
+    @PostMapping("/setNickname")
+    public ChatJSONResult setNickname(UsersBO usersBO) throws Exception {
+
+        log.info("usersBO -> {}", JSON.toJSONString(usersBO));
+
+        Users user = new Users();
+        user.setId(usersBO.getUserId());
+        user.setNickname(usersBO.getNickname());
+
+        Users userResult = userService.updateUserInfo(user);
+        UsersVO usersVO = new UsersVO();
+        BeanUtils.copyProperties(userResult, usersVO);
+
+        return ChatJSONResult.ok(usersVO);
+    }
 }
