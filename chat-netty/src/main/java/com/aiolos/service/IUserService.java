@@ -35,4 +35,12 @@ public interface IUserService {
      * @param users
      */
     Users updateUserInfo(Users users);
+
+    /**
+     * 前置条件搜索朋友
+     * @param myUserId 我的ID
+     * @param friendUsername 搜索的用户名
+     * @return
+     */
+    Integer preconditonSearchFriends(String myUserId, String friendUsername);
 }

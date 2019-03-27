@@ -76,7 +76,7 @@ public class UserController {
 
         // 获取前段传过来的base64字符串，然后转换为文件对象再上传
         String base64Data = usersBO.getFaceData();
-        String userFacePath = "E:\\IdeaProjects\\" + usersBO.getUserId() + "userface64.png";
+        String userFacePath = "/developer/portrait/" + usersBO.getUserId() + "userface64.png";
         FileUtils.base64ToFile(userFacePath, base64Data);
 
         MultipartFile faceFile = FileUtils.fileToMultipart(userFacePath);
@@ -115,5 +115,26 @@ public class UserController {
         BeanUtils.copyProperties(userResult, usersVO);
 
         return ChatJSONResult.ok(usersVO);
+    }
+
+    /**
+     * 搜索好友接口，根据用户名匹配查询
+     * @param myUserId
+     * @param friendUsername
+     * @return
+     */
+    @PostMapping("/search")
+    public ChatJSONResult searchUser(String myUserId, String friendUsername) {
+
+        log.info("myUserId -> {}, friendUsername -> {}", myUserId, friendUsername);
+
+        if  (StringUtils.isBlank(myUserId) || StringUtils.isBlank(friendUsername))
+            return ChatJSONResult.errorMsg("");
+
+        // 前置条件 - 1. 搜索的用户如果不存在，返回[无此用户]
+        // 前置条件 - 2. 搜索账号是你自己，返回[不能添加自己]
+        // 前置条件 - 3. 搜索的朋友已经是你的好友，返回[该用户已经是你的好友]
+
+        return null;
     }
 }
