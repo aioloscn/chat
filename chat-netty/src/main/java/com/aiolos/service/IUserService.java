@@ -43,4 +43,11 @@ public interface IUserService {
      * @return
      */
     Integer preconditonSearchFriends(String myUserId, String friendUsername);
+
+    /**
+     * 根据用户名查询用户对象
+     * @param username
+     * @return
+     */
+    Users queryUserInfoByUsername(String username);
 }

@@ -3,6 +3,7 @@ package com.aiolos.service.impl;
 import com.aiolos.dao.MyFriendsMapper;
 import com.aiolos.dao.UsersMapper;
 import com.aiolos.enums.SearchFriendsStatusEnum;
+import com.aiolos.pojo.MyFriends;
 import com.aiolos.pojo.Users;
 import com.aiolos.service.IUserService;
 import com.aiolos.utils.FastDFSClient;
@@ -124,10 +125,21 @@ public class UserServiceImpl implements IUserService {
             return SearchFriendsStatusEnum.NOT_YOURSELF.status;
 
         // 前置条件 - 3. 搜索的朋友已经是你的好友，返回[该用户已经是你的好友]
+        Example mfe = new Example(MyFriends.class);
+        Criteria mfc = mfe.createCriteria();
+        mfc.andEqualTo("myUserId", myUserId);
+        mfc.andEqualTo("myFriendUserId", user.getId());
+        MyFriends myFriendsRel = myFriendsMapper.selectOneByExample(mfe);
 
-        return null;
+        if (myFriendsRel != null) {
+            return SearchFriendsStatusEnum.ALREADY_FRIENDS.status;
+        }
+
+        return SearchFriendsStatusEnum.SUCCESS.status;
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
     public Users queryUserInfoByUsername(String username) {
 
         Example user = new Example(Users.class);
