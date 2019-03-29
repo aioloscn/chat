@@ -50,4 +50,11 @@ public interface IUserService {
      * @return
      */
     Users queryUserInfoByUsername(String username);
+
+    /**
+     * 添加好友
+     * @param myUserId
+     * @param friendUsername
+     */
+    void sendFriendRequest(String myUserId, String friendUsername);
 }

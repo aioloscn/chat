@@ -1,8 +1,10 @@
 package com.aiolos.service.impl;
 
+import com.aiolos.dao.FriendsRequestMapper;
 import com.aiolos.dao.MyFriendsMapper;
 import com.aiolos.dao.UsersMapper;
 import com.aiolos.enums.SearchFriendsStatusEnum;
+import com.aiolos.pojo.FriendsRequest;
 import com.aiolos.pojo.MyFriends;
 import com.aiolos.pojo.Users;
 import com.aiolos.service.IUserService;
@@ -21,6 +23,7 @@ import tk.mybatis.mapper.entity.Example;
 import tk.mybatis.mapper.entity.Example.Criteria;
 
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * @author Aiolos
@@ -43,6 +46,9 @@ public class UserServiceImpl implements IUserService {
 
     @Autowired
     private MyFriendsMapper myFriendsMapper;
+
+    @Autowired
+    private FriendsRequestMapper friendsRequestMapper;
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
@@ -146,5 +152,31 @@ public class UserServiceImpl implements IUserService {
         Criteria uc = user.createCriteria();
         uc.andEqualTo("username", username);
         return usersMapper.selectOneByExample(user);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void sendFriendRequest(String myUserId, String friendUsername) {
+
+        Users friend = queryUserInfoByUsername(friendUsername);
+
+        Example fre = new Example(FriendsRequest.class);
+        Criteria frc = fre.createCriteria();
+        frc.andEqualTo("sendUserId", myUserId);
+        frc.andEqualTo("acceptUserId", friend.getId());
+        FriendsRequest friendsRequest = friendsRequestMapper.selectOneByExample(fre);
+
+        // 没有好友请求记录
+        if (friendsRequest == null) {
+
+            String requestId = sid.nextShort();
+
+            FriendsRequest request = new FriendsRequest();
+            request.setId(requestId);
+            request.setSendUserId(myUserId);
+            request.setAcceptUserId(friend.getId());
+            request.setRequestDateTime(new Date());
+            friendsRequestMapper.insert(request);
+        }
     }
 }
