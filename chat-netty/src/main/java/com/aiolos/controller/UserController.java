@@ -178,4 +178,18 @@ public class UserController {
 
         return ChatJSONResult.ok();
     }
+
+    /**
+     * 查询添加好友的请求信息
+     * @param userId
+     * @return
+     */
+    @PostMapping("/queryFriendRequests")
+    public ChatJSONResult queryFriendRequests(String userId) {
+
+        if (StringUtils.isBlank(userId))
+            return ChatJSONResult.errorMsg("");
+
+        return ChatJSONResult.ok(userService.queryFriendRequestList(userId));
+    }
 }

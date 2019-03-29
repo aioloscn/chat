@@ -1,6 +1,9 @@
 package com.aiolos.service;
 
 import com.aiolos.pojo.Users;
+import com.aiolos.pojo.vo.FriendRequestVO;
+
+import java.util.List;
 
 /**
  * @author Aiolos
@@ -57,4 +60,11 @@ public interface IUserService {
      * @param friendUsername
      */
     void sendFriendRequest(String myUserId, String friendUsername);
+
+    /**
+     * 查询好友请求消息
+     * @param acceptUserId
+     * @return
+     */
+    List<FriendRequestVO> queryFriendRequestList(String acceptUserId);
 }

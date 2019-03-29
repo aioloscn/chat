@@ -3,10 +3,12 @@ package com.aiolos.service.impl;
 import com.aiolos.dao.FriendsRequestMapper;
 import com.aiolos.dao.MyFriendsMapper;
 import com.aiolos.dao.UsersMapper;
+import com.aiolos.dao.UsersMapperCustom;
 import com.aiolos.enums.SearchFriendsStatusEnum;
 import com.aiolos.pojo.FriendsRequest;
 import com.aiolos.pojo.MyFriends;
 import com.aiolos.pojo.Users;
+import com.aiolos.pojo.vo.FriendRequestVO;
 import com.aiolos.service.IUserService;
 import com.aiolos.utils.FastDFSClient;
 import com.aiolos.utils.FileUtils;
@@ -24,6 +26,7 @@ import tk.mybatis.mapper.entity.Example.Criteria;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Aiolos
@@ -34,6 +37,9 @@ public class UserServiceImpl implements IUserService {
 
     @Autowired
     private UsersMapper usersMapper;
+
+    @Autowired
+    private UsersMapperCustom usersMapperCustom;
 
     @Autowired
     private Sid sid;
@@ -178,5 +184,11 @@ public class UserServiceImpl implements IUserService {
             request.setRequestDateTime(new Date());
             friendsRequestMapper.insert(request);
         }
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public List<FriendRequestVO> queryFriendRequestList(String acceptUserId) {
+        return usersMapperCustom.queryFriendRequestList(acceptUserId);
     }
 }
