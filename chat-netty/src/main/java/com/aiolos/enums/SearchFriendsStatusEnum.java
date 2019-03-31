@@ -1,10 +1,13 @@
 package com.aiolos.enums;
 
+import lombok.AllArgsConstructor;
+
 /**
  * 添加好友前置状态
  * @author Aiolos
  * @date 2019-03-28 00:06
  */
+@AllArgsConstructor
 public enum SearchFriendsStatusEnum {
 
     SUCCESS(0, "OK"),
@@ -15,11 +18,6 @@ public enum SearchFriendsStatusEnum {
     public final Integer status;
 
     public final String msg;
-
-    SearchFriendsStatusEnum(Integer status, String msg) {
-        this.status = status;
-        this.msg = msg;
-    }
 
     public Integer getStatus() {
         return status;

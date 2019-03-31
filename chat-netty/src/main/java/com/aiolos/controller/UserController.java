@@ -1,8 +1,10 @@
 package com.aiolos.controller;
 
+import com.aiolos.enums.OperateFriendRequestsTypeEnum;
 import com.aiolos.enums.SearchFriendsStatusEnum;
 import com.aiolos.pojo.Users;
 import com.aiolos.pojo.bo.UsersBO;
+import com.aiolos.pojo.vo.MyFriendsVO;
 import com.aiolos.pojo.vo.UsersVO;
 import com.aiolos.service.IUserService;
 import com.aiolos.utils.ChatJSONResult;
@@ -15,10 +17,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * @author Aiolos
@@ -38,7 +41,7 @@ public class UserController {
     @PostMapping(value = "/registOrLogin")
     public ChatJSONResult registOrLogin(Users user) throws Exception {
 
-        log.info("user -> {}", JSON.toJSONString(user));
+        log.info("request -> {}, user -> {}", "registOrLogin", JSON.toJSONString(user));
 
         // 判断用户名和密码不能为空
         if (StringUtils.isBlank(user.getUsername()) || StringUtils.isBlank(user.getPassword())) {
@@ -73,7 +76,7 @@ public class UserController {
     @PostMapping("/uploadFaceBase64")
     public ChatJSONResult uploadFaceBase64(UsersBO usersBO) throws Exception {
 
-        log.info("usersBO -> {}", JSON.toJSONString(usersBO));
+        log.info("request -> {}, usersBO -> {}", "uploadFaceBase64", JSON.toJSONString(usersBO));
 
         // 获取前段传过来的base64字符串，然后转换为文件对象再上传
         String base64Data = usersBO.getFaceData();
@@ -105,7 +108,7 @@ public class UserController {
     @PostMapping("/setNickname")
     public ChatJSONResult setNickname(UsersBO usersBO) throws Exception {
 
-        log.info("usersBO -> {}", JSON.toJSONString(usersBO));
+        log.info("request -> {}, usersBO -> {}", "setNickname", JSON.toJSONString(usersBO));
 
         Users user = new Users();
         user.setId(usersBO.getUserId());
@@ -127,7 +130,7 @@ public class UserController {
     @PostMapping("/search")
     public ChatJSONResult searchUser(String myUserId, String friendUsername) {
 
-        log.info("myUserId -> {}, friendUsername -> {}", myUserId, friendUsername);
+        log.info("request -> {}, myUserId -> {}, friendUsername -> {}", "search", myUserId, friendUsername);
 
         if  (StringUtils.isBlank(myUserId) || StringUtils.isBlank(friendUsername))
             return ChatJSONResult.errorMsg("");
@@ -158,7 +161,7 @@ public class UserController {
     @PostMapping("/addFriendRequest")
     public ChatJSONResult addFriendRequest(String myUserId, String friendUsername) {
 
-        log.info("myUserId -> {}, friendUsername -> {}", myUserId, friendUsername);
+        log.info("request -> {}, myUserId -> {}, friendUsername -> {}", "addFriendRequest", myUserId, friendUsername);
 
         if  (StringUtils.isBlank(myUserId) || StringUtils.isBlank(friendUsername))
             return ChatJSONResult.errorMsg("");
@@ -187,9 +190,60 @@ public class UserController {
     @PostMapping("/queryFriendRequests")
     public ChatJSONResult queryFriendRequests(String userId) {
 
+        log.info("request -> {}, userId -> {}", "queryFriendRequests", userId);
+
         if (StringUtils.isBlank(userId))
             return ChatJSONResult.errorMsg("");
 
         return ChatJSONResult.ok(userService.queryFriendRequestList(userId));
+    }
+
+    /**
+     * 处理好友请求
+     * @param acceptUserId
+     * @param sendUserId
+     * @param operType
+     * @return
+     */
+    @PostMapping("/operateFriendRequests")
+    public ChatJSONResult operateFriendRequests(String acceptUserId, String sendUserId, Integer operType) {
+
+        log.info("request -> {}, acceptUserId -> {}, sendUserId -> {}, aperType -> {}", "operateFriendRequests", acceptUserId, sendUserId, operType);
+
+        if (StringUtils.isBlank(acceptUserId) || StringUtils.isBlank(sendUserId) || operType == null ||
+                StringUtils.isBlank(OperateFriendRequestsTypeEnum.getMsgByType(operType))) {
+
+            return ChatJSONResult.errorMsg("");
+        }
+
+        if (operType == OperateFriendRequestsTypeEnum.IGNORE.type) {
+
+            userService.delFriendRequest(acceptUserId, sendUserId);
+        } else if (operType == OperateFriendRequestsTypeEnum.PASS.type) {
+
+            userService.passFriendRequest(acceptUserId, sendUserId);
+        }
+
+        // 处理好友请求后把最新的好友列表返回到前端
+        List<MyFriendsVO> myFriends = userService.queryMyFriends(acceptUserId);
+        return ChatJSONResult.ok(myFriends);
+    }
+
+    /**
+     * 查询我的好友列表
+     * @param userId
+     * @return
+     */
+    @PostMapping("/queryMyFriends")
+    public ChatJSONResult queryMyFriends(String userId) {
+
+        log.info("request -> {}, userId -> {}", "queryMyFriends", userId);
+
+        if (StringUtils.isBlank(userId))
+            return ChatJSONResult.errorMsg("");
+
+        List<MyFriendsVO> myFriends = userService.queryMyFriends(userId);
+
+        return ChatJSONResult.ok(myFriends);
     }
 }

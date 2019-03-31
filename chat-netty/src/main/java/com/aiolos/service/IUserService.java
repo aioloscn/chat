@@ -1,7 +1,9 @@
 package com.aiolos.service;
 
+import com.aiolos.netty.ChatMsg;
 import com.aiolos.pojo.Users;
 import com.aiolos.pojo.vo.FriendRequestVO;
+import com.aiolos.pojo.vo.MyFriendsVO;
 
 import java.util.List;
 
@@ -67,4 +69,38 @@ public interface IUserService {
      * @return
      */
     List<FriendRequestVO> queryFriendRequestList(String acceptUserId);
+
+    /**
+     * 删除好友请求
+     * @param acceptUserId
+     * @param sendUserId
+     */
+    void delFriendRequest(String acceptUserId, String sendUserId);
+
+    /**
+     * 通过好友请求
+     * @param acceptUserId
+     * @param sendUserId
+     */
+    void passFriendRequest(String acceptUserId, String sendUserId);
+
+    /**
+     * 查询好友列表
+     * @param userId
+     * @return
+     */
+    List<MyFriendsVO> queryMyFriends(String userId);
+
+    /**
+     * 保存聊天消息到数据库
+     * @param chatMsg
+     * @return
+     */
+    String saveMsg(ChatMsg chatMsg);
+
+    /**
+     * 批量签收消息
+     * @param msgIdList
+     */
+    void updateMsgSigned(List<String> msgIdList);
 }

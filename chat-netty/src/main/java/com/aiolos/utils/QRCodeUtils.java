@@ -25,7 +25,6 @@ public class QRCodeUtils {
         int width=300;      		//图片的宽度
         int height=300;     		//图片的高度
         String format="png";    	//图片的格式
-//        String content="风间影月";     //内容
 
         /**
          * 定义二维码的参数
@@ -39,8 +38,8 @@ public class QRCodeUtils {
          * 生成二维码
          */
         try {
-            BitMatrix bitMatrix=new MultiFormatWriter().encode(content, BarcodeFormat.QR_CODE, width, height,hints);
-            Path file=new File(filePath).toPath();
+            BitMatrix bitMatrix = new MultiFormatWriter().encode(content, BarcodeFormat.QR_CODE, width, height,hints);
+            Path file = new File(filePath).toPath();
             MatrixToImageWriter.writeToPath(bitMatrix, format, file);
         } catch (Exception e) {
             e.printStackTrace();

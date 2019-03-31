@@ -1,18 +1,17 @@
 package com.aiolos.service.impl;
 
-import com.aiolos.dao.FriendsRequestMapper;
-import com.aiolos.dao.MyFriendsMapper;
-import com.aiolos.dao.UsersMapper;
-import com.aiolos.dao.UsersMapperCustom;
+import com.aiolos.dao.*;
+import com.aiolos.enums.MsgSignFlagEnum;
 import com.aiolos.enums.SearchFriendsStatusEnum;
+import com.aiolos.netty.ChatMsg;
 import com.aiolos.pojo.FriendsRequest;
 import com.aiolos.pojo.MyFriends;
 import com.aiolos.pojo.Users;
 import com.aiolos.pojo.vo.FriendRequestVO;
+import com.aiolos.pojo.vo.MyFriendsVO;
 import com.aiolos.service.IUserService;
 import com.aiolos.utils.FastDFSClient;
 import com.aiolos.utils.FileUtils;
-import com.aiolos.utils.MD5Utils;
 import com.aiolos.utils.QRCodeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
@@ -56,6 +55,9 @@ public class UserServiceImpl implements IUserService {
     @Autowired
     private FriendsRequestMapper friendsRequestMapper;
 
+    @Autowired
+    private ChatMsgMapper chatMsgMapper;
+
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public boolean queryUsernameIsExist(String username) {
@@ -90,7 +92,7 @@ public class UserServiceImpl implements IUserService {
         // 为每个用户生成一个唯一的二维码
         String qrCodePath = "/developer/qrcode/user" + userId + "qrcode.png";
         try {
-            qrCodeUtils.createQRCode(qrCodePath, MD5Utils.getMD5Str(user.getUsername()));
+            qrCodeUtils.createQRCode(qrCodePath, "QR:" + user.getUsername());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -118,7 +120,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Users queryUserById(String userId) {
+    protected Users queryUserById(String userId) {
         return usersMapper.selectByPrimaryKey(userId);
     }
 
@@ -190,5 +192,65 @@ public class UserServiceImpl implements IUserService {
     @Override
     public List<FriendRequestVO> queryFriendRequestList(String acceptUserId) {
         return usersMapperCustom.queryFriendRequestList(acceptUserId);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void delFriendRequest(String acceptUserId, String sendUserId) {
+
+        Example fre = new Example(FriendsRequest.class);
+        Criteria frc = fre.createCriteria();
+        frc.andEqualTo("acceptUserId", acceptUserId);
+        frc.andEqualTo("sendUserId", sendUserId);
+        friendsRequestMapper.deleteByExample(fre);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void passFriendRequest(String acceptUserId, String sendUserId) {
+
+        saveFriend(acceptUserId, sendUserId);
+        saveFriend(sendUserId, acceptUserId);
+        delFriendRequest(acceptUserId, sendUserId);
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public List<MyFriendsVO> queryMyFriends(String userId) {
+
+        return usersMapperCustom.queryMyFriends(userId);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public String saveMsg(ChatMsg chatMsg) {
+
+        com.aiolos.pojo.ChatMsg chatDB = new com.aiolos.pojo.ChatMsg();
+        String id = sid.nextShort();
+        chatDB.setId(id);
+        chatDB.setSendUserId(chatMsg.getSenderId());
+        chatDB.setAcceptUserId(chatMsg.getReceiverId());
+        chatDB.setCreateTime(new Date());
+        chatDB.setSignFlag(MsgSignFlagEnum.UNSIGN.type);
+        chatDB.setMsg(chatMsg.getMsg());
+        chatMsgMapper.insert(chatDB);
+        return id;
+    }
+
+    @Override
+    public void updateMsgSigned(List<String> msgIdList) {
+
+        usersMapperCustom.batchUpdateMsgSigned(msgIdList);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    protected void saveFriend(String acceptUserId, String sendUserId) {
+
+        MyFriends myFriend = new MyFriends();
+        String id = sid.nextShort();
+        myFriend.setId(id);
+        myFriend.setMyUserId(acceptUserId);
+        myFriend.setMyFriendUserId(sendUserId);
+        myFriendsMapper.insert(myFriend);
     }
 }

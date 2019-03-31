@@ -3,7 +3,6 @@
 <mapper namespace="com.aiolos.dao.UsersMapperCustom">
 
   <select id="queryFriendRequestList" resultType="com.aiolos.pojo.vo.FriendRequestVO" parameterType="String">
-
     select
       sender.id as sendUserId,
       sender.username as sendUsername,
@@ -16,4 +15,31 @@
       fr.accept_user_id = #{acceptUserId}
     </where>
   </select>
+
+  <select id="queryMyFriends" resultType="com.aiolos.pojo.vo.MyFriendsVO" parameterType="String">
+    select
+      u.id as friendId,
+      u.username as friendUsername,
+      u.face_image as friendFaceImage,
+      u.nickname as friendNickname
+    from my_friends mf
+    left join users u
+    on mf.my_friend_user_id = u.id
+    <where>
+      mf.my_user_id = #{userId}
+    </where>
+  </select>
+
+  <update id="batchUpdateMsgSigned">
+    update chat_msg
+    <set>
+      sign_flag = 1
+    </set>
+    <where>
+      id in 
+      <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </where>
+  </update>
 </mapper>
