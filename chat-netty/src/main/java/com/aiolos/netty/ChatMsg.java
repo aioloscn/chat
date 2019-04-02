@@ -3,6 +3,7 @@ package com.aiolos.netty;
 import java.io.Serializable;
 
 /**
+ * 聊天模型对象
  * @author Aiolos
  * @date 2019-03-31 21:57
  */

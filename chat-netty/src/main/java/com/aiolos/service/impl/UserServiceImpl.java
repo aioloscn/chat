@@ -1,9 +1,12 @@
 package com.aiolos.service.impl;
 
 import com.aiolos.dao.*;
+import com.aiolos.enums.MsgActionEnum;
 import com.aiolos.enums.MsgSignFlagEnum;
 import com.aiolos.enums.SearchFriendsStatusEnum;
 import com.aiolos.netty.ChatMsg;
+import com.aiolos.netty.DataContent;
+import com.aiolos.netty.UserChannelRel;
 import com.aiolos.pojo.FriendsRequest;
 import com.aiolos.pojo.MyFriends;
 import com.aiolos.pojo.Users;
@@ -12,7 +15,10 @@ import com.aiolos.pojo.vo.MyFriendsVO;
 import com.aiolos.service.IUserService;
 import com.aiolos.utils.FastDFSClient;
 import com.aiolos.utils.FileUtils;
+import com.aiolos.utils.JsonUtils;
 import com.aiolos.utils.QRCodeUtils;
+import io.netty.channel.Channel;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -212,6 +218,15 @@ public class UserServiceImpl implements IUserService {
         saveFriend(acceptUserId, sendUserId);
         saveFriend(sendUserId, acceptUserId);
         delFriendRequest(acceptUserId, sendUserId);
+
+        // 好友请求通过后，时候用websocket推送最新的好友列表到请求方
+        Channel sendChannel = UserChannelRel.get(sendUserId);
+        if (sendChannel != null) {
+
+            DataContent dataContent = new DataContent();
+            dataContent.setAction(MsgActionEnum.PULL_FRIEND.type);
+            sendChannel.writeAndFlush(new TextWebSocketFrame(JsonUtils.obj2String(dataContent)));
+        }
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
