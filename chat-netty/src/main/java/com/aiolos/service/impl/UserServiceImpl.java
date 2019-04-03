@@ -252,10 +252,23 @@ public class UserServiceImpl implements IUserService {
         return id;
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void updateMsgSigned(List<String> msgIdList) {
 
         usersMapperCustom.batchUpdateMsgSigned(msgIdList);
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public List<com.aiolos.pojo.ChatMsg> getUnReadMsgList(String acceptUserId) {
+
+        Example chatExample = new Example(com.aiolos.pojo.ChatMsg.class);
+        Criteria chatCriteria = chatExample.createCriteria();
+        chatCriteria.andEqualTo("signFlag", MsgSignFlagEnum.UNSIGN.type);
+        chatCriteria.andEqualTo("acceptUserId", acceptUserId);
+        List<com.aiolos.pojo.ChatMsg> result = chatMsgMapper.selectByExample(chatExample);
+        return result;
     }
 
     @Transactional(propagation = Propagation.REQUIRED)

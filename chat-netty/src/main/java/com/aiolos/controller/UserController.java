@@ -246,4 +246,20 @@ public class UserController {
 
         return ChatJSONResult.ok(myFriends);
     }
+
+    /**
+     * 用户手机端获取未签收的消息列表
+     * @param acceptUserId
+     * @return
+     */
+    @PostMapping("/getUnReadMsgList")
+    public ChatJSONResult getUnReadMsgList(String acceptUserId) {
+
+        if (StringUtils.isBlank(acceptUserId)) {
+            return ChatJSONResult.errorMsg("");
+        }
+
+        List<com.aiolos.pojo.ChatMsg> unreadMsgList = userService.getUnReadMsgList(acceptUserId);
+        return ChatJSONResult.ok(unreadMsgList);
+    }
 }

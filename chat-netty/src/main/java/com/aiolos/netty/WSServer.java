@@ -27,7 +27,7 @@ public class WSServer {
     private EventLoopGroup parentGroup;
     private EventLoopGroup childGroup;
     private ServerBootstrap server;
-    private ChannelFuture future;
+    public ChannelFuture future;
 
     public WSServer() {
 
@@ -39,7 +39,7 @@ public class WSServer {
 
     public void start() {
 
-        future = this.server.bind(8088);
+        this.future = server.bind(8088);
         log.info("netty websocket server is started");
     }
 }

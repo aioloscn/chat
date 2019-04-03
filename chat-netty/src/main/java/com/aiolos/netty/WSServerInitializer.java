@@ -30,9 +30,9 @@ public class WSServerInitializer extends ChannelInitializer<SocketChannel> {
 
         // 针对客户端，如果在1分钟时没有向服务端发送读写心跳(ALL)，则主动断开
         // 如果是读空闲或者写空闲，不处理
-        pipeline.addLast(new IdleStateHandler(8, 10, 12));
+        pipeline.addLast(new IdleStateHandler(12, 16, 60));
         // 自定义的空闲状态检测
-//        pipeline.addLast(new HeartBeatHandler());
+        pipeline.addLast(new HeartBeatHandler());
 
         /**
          * websocket 服务器处理的协议，用于指定给客户端连接访问的路由 : /ws

@@ -103,4 +103,11 @@ public interface IUserService {
      * @param msgIdList
      */
     void updateMsgSigned(List<String> msgIdList);
+
+    /**
+     * 获取未签收的消息列表
+     * @param acceptUserId
+     * @return
+     */
+    List<com.aiolos.pojo.ChatMsg> getUnReadMsgList(String acceptUserId);
 }
