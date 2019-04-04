@@ -32,7 +32,7 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
 
         // 获取客户端发送过来的消息
         String content = textWebSocketFrame.text();
-        log.info("content -> {}", content);
+        log.info("收到消息,channelId -> {}, content -> {}", ctx.channel().id().asShortText(), content);
 
         Channel currentChannel = ctx.channel();
 
