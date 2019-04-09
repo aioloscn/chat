@@ -22,4 +22,11 @@ public class UserChannelRel {
 
         return manager.get(senderId);
     }
+
+    public static void output() {
+        for (HashMap.Entry<String, Channel> entry : manager.entrySet()) {
+            System.out.println("UserId: " + entry.getKey()
+                    + ", ChannelId: " + entry.getValue().id().asLongText());
+        }
+    }
 }

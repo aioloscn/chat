@@ -126,6 +126,8 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
 
+        cause.printStackTrace();
+
         // 发生异常后关闭channel连接，随后从ChannelGroup中移除
         ctx.channel().close();
         users.remove(ctx.channel());
