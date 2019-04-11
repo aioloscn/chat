@@ -11,7 +11,7 @@
 
     <artifactId>chat-netty</artifactId>
 
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <name>chat-netty</name>
     <description>chat-netty</description>

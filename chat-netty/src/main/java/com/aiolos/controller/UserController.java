@@ -255,6 +255,8 @@ public class UserController {
     @PostMapping("/getUnReadMsgList")
     public ChatJSONResult getUnReadMsgList(String acceptUserId) {
 
+        log.info("request -> {}, acceptUserId -> {}", "getUnReadMsgList", acceptUserId);
+
         if (StringUtils.isBlank(acceptUserId)) {
             return ChatJSONResult.errorMsg("");
         }

@@ -18,7 +18,7 @@
 
   <select id="queryMyFriends" resultType="com.aiolos.pojo.vo.MyFriendsVO" parameterType="String">
     select
-      u.id as friendId,
+      u.id as friendUserId,
       u.username as friendUsername,
       u.face_image as friendFaceImage,
       u.nickname as friendNickname

@@ -28,7 +28,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/chat?useUnicode=true&serverTimezone=UTC&characterEncoding=UTF-8
     username: root
-    password: root
+    password: .
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
       connection-timeout: 30000
@@ -46,5 +46,4 @@ fdfs:
   thumb-image:
     width: 80
     height: 80
-  tracker-list: 188.131.240.181:22122
-# 188.131.240.181  172.21.0.3
+  tracker-list: 1.1.1.1:22122
